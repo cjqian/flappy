@@ -4,7 +4,6 @@ import numpy as np
 import six
 import statistics
 import time
-from typing import List
 
 WINNING_SCORE = 100 # This is actually 195 but let's be gentle for now
 TIMESTEPS = 100
@@ -33,7 +32,7 @@ class GameLog(object):
     self.history = []
     self.score = 0
 
-def play_game(env, agent, render=True): # Returns a game log
+def play_game(env, agent, render=True, game_number=None): # Returns a game log
   log = GameLog()
 
   observation = env.reset()
@@ -47,7 +46,7 @@ def play_game(env, agent, render=True): # Returns a game log
       observation, reward, done, info = env.step(action)
       log.score += reward
       if done:
-          print("Episode finished after {ts} timesteps; score {sc}".format(ts=t+1, sc=log.score))
+          print("Episode {game_number} finished after {ts} timesteps; score {sc}".format(game_number=game_number, ts=t+1, sc=log.score))
           break
 
   return log
@@ -55,13 +54,14 @@ def play_game(env, agent, render=True): # Returns a game log
 def generate_training_data(env, agent, episodes=1000, score_threshold = 50, render=False):
   scores = []
   training_data = []
-  for _ in range(episodes):
-    log = play_game(env, agent, render=render)
+  for i in range(episodes):
+    log = play_game(env, agent, render=render, game_number=i)
     if log.score > score_threshold:
       training_data.extend(log.history)
     scores.append(log.score)
 
-  print('Done. Mean score: {m}'.format(m=statistics.mean(scores)))
+  # Print metrics
+  print('\nDone. Mean score: {m}'.format(m=statistics.mean(scores)))
   print('Passed: {t}/{s}'.format(t = len([x for x in scores if x > score_threshold]), s=len(scores)))
 
   # Save training data
@@ -72,7 +72,12 @@ def main():
   env = gym.make('CartPole-v0')
 
   agent = RandomAgent(env)
-  generate_training_data(env, agent, episodes=10, score_threshold=50, render=True)
+  start = time.time()
+  generate_training_data(
+    env, agent, episodes=100000, score_threshold=60, render=False)
+
+  print('Elapsed time: {t} seconds'.format(t=round(time.time() - start, 4)))
+
   env.close()
 
 main()
