@@ -11,7 +11,9 @@ import game_lib
 import models
 
 def train_model():
-  m = models.train_model()
+  m = models.DefaultModel()
+  m.train_and_save()
+  m.load()
   print(m)
 
 def generate_training_data():

@@ -10,7 +10,6 @@ WINNING_SCORE = 100 # This is actually 195 but let's be gentle for now
 TIMESTEPS = 100
 
 TRAINING_DATA_LOC = 'data/training.npy'
-MODEL_LOC = 'data/model'
 
 class GameLog(object):
   def __init__(self):
