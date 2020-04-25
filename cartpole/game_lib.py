@@ -1,4 +1,5 @@
 import abc
+import collections
 import gym
 import numpy as np
 import six
@@ -8,24 +9,6 @@ import time
 WINNING_SCORE = 100 # This is actually 195 but let's be gentle for now
 TIMESTEPS = 100
 
-# AGENTS
-class Agent(six.with_metaclass(abc.ABCMeta, object)):
-  def __init__(self, env):
-    self._env = env  # environment
-
-  # Returns one-hot encoding; list where ath value is 1
-  def encode_discrete_action(self, a):
-    l = [0] * self._env.action_space.n
-    l[a] = 1
-    return l
-
-  @abc.abstractmethod
-  def step(self, observation):
-    pass
-
-class RandomAgent(Agent):
-  def step(self, observation):
-    return self._env.action_space.sample()
 
 class GameLog(object):
   def __init__(self):
@@ -62,22 +45,14 @@ def generate_training_data(env, agent, episodes=1000, score_threshold = 50, rend
 
   # Print metrics
   print('\nDone. Mean score: {m}'.format(m=statistics.mean(scores)))
-  print('Passed: {t}/{s}'.format(t = len([x for x in scores if x > score_threshold]), s=len(scores)))
+  accepted_scores = [x for x in scores if x > score_threshold]
+
+  a = len(accepted_scores)
+  s = len(scores)
+  print('Passed: {f} ({t}/{s})'.format(
+    f = (a / (s + 0.0)), t = a, s = s))
+  print(collections.Counter(accepted_scores))
 
   # Save training data
-  np.save('training.npy', np.array(training_data))
+  #np.save('data/training.npy', np.array(training_data))
   #print(np.load('training.npy', allow_pickle=True))
-
-def main():
-  env = gym.make('CartPole-v0')
-
-  agent = RandomAgent(env)
-  start = time.time()
-  generate_training_data(
-    env, agent, episodes=100000, score_threshold=60, render=False)
-
-  print('Elapsed time: {t} seconds'.format(t=round(time.time() - start, 4)))
-
-  env.close()
-
-main()
