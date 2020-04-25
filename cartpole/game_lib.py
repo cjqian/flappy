@@ -35,7 +35,7 @@ def play_game(env, agent, render=True, game_number=None): # Returns a game log
 
   return log
 
-def generate_training_data(env, agent, episodes=1000, score_threshold = 50, render=False):
+def play(env, agent, episodes=1000, score_threshold = 50, render=False, save_training_data=False):
   scores = []
   training_data = []
   for i in range(episodes):
@@ -54,5 +54,5 @@ def generate_training_data(env, agent, episodes=1000, score_threshold = 50, rend
     f = (a / (s + 0.0)), t = a, s = s))
   print(collections.Counter(accepted_scores))
 
-  # Save training data
-  #np.save(TRAINING_DATA_LOC, np.array(training_data))
+  if save_training_data:
+    np.save(TRAINING_DATA_LOC, np.array(training_data))
