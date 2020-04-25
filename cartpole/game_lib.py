@@ -11,6 +11,7 @@ TIMESTEPS = 500
 
 TRAINING_DATA_LOC = 'data/training.npy'
 
+# Would be nice to pass in an ID flag and store multiple models.
 class GameLog(object):
   def __init__(self):
     self.history = []
@@ -46,13 +47,10 @@ def play(env, agent, episodes=1000, score_threshold = 50, render=False, save_tra
 
   # Print metrics
   print('\nDone. Mean score: {m} +- {s}'.format(m=statistics.mean(scores), s=statistics.stdev(scores)))
-  if statistics.mean(scores) > WINNING_SCORE:
-    print('YOU WIN!')
-  else:
-    print('YOU LOSE')
 
   if save_training_data:
     accepted_scores = [x for x in scores if x > score_threshold]
+    print(collections.Counter(accepted_scores))
 
     a = len(accepted_scores)
     s = len(scores)
@@ -60,8 +58,13 @@ def play(env, agent, episodes=1000, score_threshold = 50, render=False, save_tra
     print('Passed: {f} ({t}/{s})'.format(
       f = (a / (s + 0.0)), t = a, s = s))
     print(collections.Counter(accepted_scores))
+
+    np.save(TRAINING_DATA_LOC, np.array(training_data))
+    print('Saved training data.')
   else:
     print(collections.Counter(scores))
+    if statistics.mean(scores) > WINNING_SCORE:
+      print('YOU WIN!')
+    else:
+      print('YOU LOSE')
 
-  if save_training_data:
-    np.save(TRAINING_DATA_LOC, np.array(training_data))

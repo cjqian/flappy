@@ -4,8 +4,6 @@ import random
 import numpy as np
 import six
 import tflearn
-from tflearn.layers.core import input_data, dropout, fully_connected
-from tflearn.layers.estimator import regression
 from statistics import median, mean
 from collections import Counter
 
@@ -16,7 +14,7 @@ class ModelWrapper(six.with_metaclass(abc.ABCMeta, object)):
     if not training_data:
       training_data = np.load(game_lib.TRAINING_DATA_LOC, allow_pickle=True)
 
-    self.model = self._load_model(training_data) if load else self._train_and_save_model(training_dat)
+    self.model = self._load_model(training_data) if load else self._train_and_save_model(training_data)
 
   @property
   def save_location(self):
@@ -44,9 +42,9 @@ class ModelWrapper(six.with_metaclass(abc.ABCMeta, object)):
     X = np.array([i[0] for i in training_data]).reshape(-1,len(training_data[0][0]),1)
     y = [i[1] for i in training_data]
 
-    model = self._initialze_model(input_size = len(X[0]))
+    model = self._initialize_model(input_size = len(X[0]))
 
-    model.fit({'input': X}, {'targets': y}, n_epoch=5, snapshot_step=500, show_metric=True, run_id=self._get_id())
+    model.fit({'input': X}, {'targets': y}, n_epoch=10, snapshot_step=500, show_metric=True, run_id=self._get_id())
     model.save(self.save_location)
 
     print('Saved!')

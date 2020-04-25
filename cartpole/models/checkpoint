@@ -1,2 +1,0 @@
-model_checkpoint_path: "/home/cjqian/openai/flappy/cartpole/models/default"
-all_model_checkpoint_paths: "/home/cjqian/openai/flappy/cartpole/models/default"
