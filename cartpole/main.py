@@ -32,6 +32,7 @@ def play():
   env = gym.make('CartPole-v0')
 
   agent = agents.DefaultAgent(env)
+  #agent = agents.RandomAgent(env)
   start = time.time()
   game_lib.play(
     env, agent, episodes=10, render=True)

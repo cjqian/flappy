@@ -6,8 +6,8 @@ import six
 import statistics
 import time
 
-WINNING_SCORE = 100 # This is actually 195 but let's be gentle for now
-TIMESTEPS = 100
+WINNING_SCORE = 195
+TIMESTEPS = 500
 
 TRAINING_DATA_LOC = 'data/training.npy'
 
@@ -45,14 +45,23 @@ def play(env, agent, episodes=1000, score_threshold = 50, render=False, save_tra
     scores.append(log.score)
 
   # Print metrics
-  print('\nDone. Mean score: {m}'.format(m=statistics.mean(scores)))
-  accepted_scores = [x for x in scores if x > score_threshold]
+  print('\nDone. Mean score: {m} +- {s}'.format(m=statistics.mean(scores), s=statistics.stdev(scores)))
+  if statistics.mean(scores) > WINNING_SCORE:
+    print('YOU WIN!')
+  else:
+    print('YOU LOSE')
 
-  a = len(accepted_scores)
-  s = len(scores)
-  print('Passed: {f} ({t}/{s})'.format(
-    f = (a / (s + 0.0)), t = a, s = s))
-  print(collections.Counter(accepted_scores))
+  if save_training_data:
+    accepted_scores = [x for x in scores if x > score_threshold]
+
+    a = len(accepted_scores)
+    s = len(scores)
+
+    print('Passed: {f} ({t}/{s})'.format(
+      f = (a / (s + 0.0)), t = a, s = s))
+    print(collections.Counter(accepted_scores))
+  else:
+    print(collections.Counter(scores))
 
   if save_training_data:
     np.save(TRAINING_DATA_LOC, np.array(training_data))
