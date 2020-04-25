@@ -4,9 +4,9 @@ import gym
 import numpy as np
 import six
 import statistics
+import tensorflow as tf
 import time
 
-# AGENTS
 class Agent(six.with_metaclass(abc.ABCMeta, object)):
   def __init__(self, env):
     self._env = env  # environment
@@ -24,4 +24,3 @@ class Agent(six.with_metaclass(abc.ABCMeta, object)):
 class RandomAgent(Agent):
   def step(self, observation):
     return self._env.action_space.sample()
-

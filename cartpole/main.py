@@ -8,8 +8,13 @@ import time
 
 import agents
 import game_lib
+import models
 
-def main():
+def train_model():
+  m = models.train_model()
+  print(m)
+
+def generate_training_data():
   env = gym.make('CartPole-v0')
 
   agent = agents.RandomAgent(env)
@@ -21,4 +26,4 @@ def main():
 
   env.close()
 
-main()
+train_model()

@@ -9,6 +9,8 @@ import time
 WINNING_SCORE = 100 # This is actually 195 but let's be gentle for now
 TIMESTEPS = 100
 
+TRAINING_DATA_LOC = 'data/training.npy'
+MODEL_LOC = 'data/model'
 
 class GameLog(object):
   def __init__(self):
@@ -54,5 +56,4 @@ def generate_training_data(env, agent, episodes=1000, score_threshold = 50, rend
   print(collections.Counter(accepted_scores))
 
   # Save training data
-  #np.save('data/training.npy', np.array(training_data))
-  #print(np.load('training.npy', allow_pickle=True))
+  #np.save(TRAINING_DATA_LOC, np.array(training_data))
