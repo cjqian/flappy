@@ -1,9 +1,13 @@
 import abc
+import attr
 import gym
 import six
 import time
+from typing import List
 
+TIMESTEPS = 100
 
+# AGENTS
 class Agent(six.with_metaclass(abc.ABCMeta, object)):
   def __init__(self, env):
     self._env = env  # environment
@@ -16,17 +20,27 @@ class RandomAgent(Agent):
   def step(self, observation):
     return self._env.action_space.sample()
 
-def run_episodes(env, agent, n_episodes = 1):
-  for i_episode in range(n_episodes):
-      observation = env.reset()
-      for t in range(100): # timesteps
-          env.render()
-          print(observation)
-          action = agent.step(observation)
-          observation, reward, done, info = env.step(action)
-          if done:
-              print("Episode finished after {} timesteps".format(t+1))
-              break
+@attr.s
+class GameLog(object):
+#####################
+  history = attr.ib([])
+  score = attr.ib(0)
+
+def play_game(env, agent):
+    log = GameLog()
+
+    observation = env.reset()
+    for t in range(TIMESTEPS): # timesteps
+        env.render()
+        #print(observation)
+        action = agent.step(observation)
+
+        log.history.append((observation, action))
+        observation, reward, done, info = env.step(action)
+        log.score += reward
+        if done:
+            print("Episode finished after {ts} timesteps; score {sc}".format(ts=t+1, sc=log.score))
+            break
 
 def main():
   env = gym.make('CartPole-v0')
@@ -36,7 +50,9 @@ def main():
   print(env.observation_space)
 
   agent = RandomAgent(env)
-  run_episodes(env, agent, n_episodes = 5)
+  for _ in range(10): # Play 10 games
+    play_game(env, agent)
+
   env.close()
 
 main()
