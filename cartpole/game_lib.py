@@ -7,7 +7,7 @@ import statistics
 import time
 
 WINNING_SCORE = 195
-TIMESTEPS = 500
+TIMESTEPS = 1000
 
 TRAINING_DATA_LOC = 'data/training.npy'
 

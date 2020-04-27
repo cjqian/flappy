@@ -18,6 +18,7 @@ def train_model(model):
 
 def generate_training_data(episodes):
   env = gym.make('CartPole-v0')
+  env._max_episode_steps = game_lib.TIMESTEPS
 
   agent = agents.RandomAgent(env)
   start = time.time()
@@ -29,11 +30,13 @@ def generate_training_data(episodes):
   env.close()
 
 # Generate model
-generate_training_data(episodes=100000000)
-model = models.DefaultModelWrapper(load=False)
+#generate_training_data(episodes=50000)
+#model = models.DefaultModelWrapper(load=False)
 
 def play():
   env = gym.make('CartPole-v0')
+  # Prevent capping out at 200 timesteps
+  env._max_episode_steps = game_lib.TIMESTEPS
 
   agent = agents.DefaultAgent(env)
   #agent = agents.RandomAgent(env)
@@ -45,5 +48,5 @@ def play():
 
   env.close()
 
-#play()
+play()
 
