@@ -25,7 +25,8 @@ class Agent(six.with_metaclass(abc.ABCMeta, object)):
 
 class RandomAgent(Agent):
   def step(self, observation):
-    return self._env.action_space.sample()
+    # 1 is nothing, 0 is jumping
+    return self._env.action_space.sample() # 1 or 0
 
 class DefaultAgent(Agent):
   def __init__(self, env):

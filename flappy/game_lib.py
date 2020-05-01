@@ -10,6 +10,7 @@ WINNING_SCORE = 195
 TIMESTEPS = 1000
 
 TRAINING_DATA_LOC = 'data/training.npy'
+Y_GROUND_PIXELS = 387 # If player_y is at 387, we died by hitting the ground.
 
 # Would be nice to pass in an ID flag and store multiple models.
 class GameLog(object):
@@ -17,18 +18,37 @@ class GameLog(object):
     self.history = []
     self.score = 0
 
+def get_observation(env):
+  return env.game_state.getGameState()
+
+def get_reward(env, observation, done):
+  if done:
+    # Punished more if we crashed v. falling
+    if observation['player_y'] != Y_GROUND_PIXELS:
+      return -1000 # Crashed into a pole
+    else: 
+      return -500 # Fell into the ground
+  
+  return 1
+
 def play_game(env, agent, render=True, game_number=None): # Returns a game log
   log = GameLog()
 
-  observation = env.reset()
+  env.reset()
   for t in range(TIMESTEPS): # timesteps
       if render:
         env.render()
+      observation = get_observation(env)
+      print(observation)
       action = agent.step(observation)
       # Observation at t - 1
       log.history.append(
         (observation, agent.encode_discrete_action(action)))
-      observation, reward, done, info = env.step(action)
+
+      _, _, done, info = env.step(action)
+
+      reward = get_reward(env, observation, done)
+
       log.score += reward
       if done:
           print("Episode {game_number} finished after {ts} timesteps; score {sc}".format(game_number=game_number, ts=t+1, sc=log.score))

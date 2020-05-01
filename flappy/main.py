@@ -19,8 +19,9 @@ def train_model(model):
 
 def generate_training_data(episodes):
   env = gym.make('FlappyBird-v0')
-  env._max_episode_steps = game_lib.TIMESTEPS
 
+  print(env.game_state.getScreenDims())
+  print(env.game_state.getGameState())
   agent = agents.RandomAgent(env)
   start = time.time()
   game_lib.play(
@@ -31,19 +32,17 @@ def generate_training_data(episodes):
   env.close()
 
 # Generate model
-generate_training_data(episodes=10)
+generate_training_data(episodes=1)
 #model = models.DefaultModelWrapper(load=False)
 
 def play():
   env = gym.make('FlappyBird-v0')
-  # Prevent capping out at 200 timesteps
-  env._max_episode_steps = game_lib.TIMESTEPS
-
+  
   agent = agents.DefaultAgent(env)
   #agent = agents.RandomAgent(env)
   start = time.time()
   game_lib.play(
-    env, agent, episodes=10, render=True)
+    env, agent, episodes=1, render=True)
 
   print('Elapsed time: {t} seconds'.format(t=round(time.time() - start, 4)))
 
